@@ -1,11 +1,10 @@
-var Cryptopia = require('cryptopia-api');
+var Cryptopia = require('cryptopia-api')();
 var util = require('../core/util.js');
 var _ = require('lodash');
 var moment = require('moment');
 var log = require('../core/log');
 
 var Trader = function(config) {
-  this.user = config.username;
   this.key = config.key;
   this.secret = config.secret;
   this.currency = config.currency.toUpperCase();
@@ -18,16 +17,29 @@ var Trader = function(config) {
   _.bindAll(this);
 }
 
+const options = {
+  API_KEY: '',
+  API_SECRET: '',
+  HOST_URL: 'https://www.cryptopia.co.nz/api'
+}
+
+Cryptopia.setOptions(options);
+
 //TODO Test func, remove later
 Trader.prototype.testQuery = function() {
-  return Cryptopia().getCurrencies().then(data => {console.log(data)})
-  //return this.cryptopia.getCurrencies().then(data => {console.log(data)})
+  return Cryptopia.getCurrencies().then(data => {console.log(data)})
+}
+
+//TODO test private get orders query
+Trader.prototype.getOpenOrders = function() {
+  return Cryptopia.getOpenOrders({Market: 'ETH/BTC', Count: 10}).then(data => {console.log(data)})
 }
 
 Trader.getCapabilities = function () {
 
   //TODO remove
-  this.prototype.testQuery();
+  //this.prototype.testQuery();
+  this.prototype.getOpenOrders();
 
   return {
     name: 'Cryptopia',
