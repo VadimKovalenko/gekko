@@ -12,34 +12,44 @@ var Trader = function(config) {
   this.pair = this.asset + '_' + this.currency;
   this.name = 'cryptopia';
 
-  this.cryptopia = Cryptopia;
+
+  Cryptopia.setOptions({
+    /*'API_KEY': this.key,
+    'API_SECRET': this.secret*/
+    API_KEY: 'cryptopia-key',
+    API_SECRET: 'cryptopia-secret'
+  });
+
+  console.log(`${config.key}`);
+
+  this.cryptopiaApi = Cryptopia;
 
   _.bindAll(this);
-}
-
-const options = {
-  API_KEY: '',
-  API_SECRET: '',
-  HOST_URL: 'https://www.cryptopia.co.nz/api'
-}
-
-Cryptopia.setOptions(options);
-
-//TODO Test func, remove later
-Trader.prototype.testQuery = function() {
-  return Cryptopia.getCurrencies().then(data => {console.log(data)})
-}
+};
 
 //TODO test private get orders query
 Trader.prototype.getOpenOrders = function() {
-  return Cryptopia.getOpenOrders({Market: 'ETH/BTC', Count: 10}).then(data => {console.log(data)})
-}
+  //return Cryptopia.getOpenOrders({Market: 'ETH/BTC', Count: 10}).then(data => {console.log(data)})
+  return this.cryptopiaApi.getOpenOrders({Market: 'ETH/BTC', Count: 10}).then(data => {console.log(data)})
+};
+
+//TODO traid pair is hardcoded for now
+Trader.prototype.getTrades = function(since, callback, descending) {
+  return this.cryptopiaApi.getMarketHistory({Market: 'ETH_BTC'}).then(data => {return data})
+};
+
+Trader.prototype.getTicker = function(callback) {
+  return this.cryptopiaApi.getMarket({Market: 'ETH_BTC'}).then(data => {return data})
+};
+
+Trader.prototype.getPortfolio = function(callback) {
+  return this.cryptopiaApi.getBalance().then(data => {return data})
+};
 
 Trader.getCapabilities = function () {
 
   //TODO remove
-  //this.prototype.testQuery();
-  this.prototype.getOpenOrders();
+  //this.prototype.getOpenOrders();
 
   return {
     name: 'Cryptopia',
@@ -55,6 +65,6 @@ Trader.getCapabilities = function () {
     tradable: true,
     tid: 'tid',
   };
-}
+};
 
 module.exports = Trader;
