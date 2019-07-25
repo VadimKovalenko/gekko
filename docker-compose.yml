@@ -1,7 +1,6 @@
 version: '3'
 services:
   gekko:
-    restart: always
     build: ./
     volumes:
       - ./volumes/gekko/history:/usr/src/app/history
@@ -12,6 +11,7 @@ services:
     environment:
      - HOST
      - PORT
+     - USE_SSL
     ports: # you can comment this out when using the nginx frontend
       - "${PORT}:${PORT}"
 ## optionally set nginx vars if you wish to frontend it with nginx

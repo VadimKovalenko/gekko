@@ -16,7 +16,7 @@ var silent = config.silent;
 
 var sendToParent = function() {
   var send = method => (...args) => {
-    process.send({'log': args.join(' ')});
+    process.send({log: method, message: args.join(' ')});
   }
 
   return {
@@ -75,7 +75,6 @@ if(silent) {
   Log.prototype.debug = _.noop;
   Log.prototype.info = _.noop;
   Log.prototype.warn = _.noop;
-  Log.prototype.error = _.noop;
   Log.prototype.write = _.noop;
 }
 
